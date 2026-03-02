@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>マイタイムテーブル作成 - IDORISE 2026</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 丸文字フォント -->
+  <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&display=swap" rel="stylesheet">
+
+  <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.292.0?deps=react@18.2.0"
+      }
+    }
+  </script>
+  
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+    body { 
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      background-color: #f9fafb;
+    }
+    
+    .scrollbar-visible::-webkit-scrollbar {
+      -webkit-appearance: none;
+      height: 10px;
+    }
+    .scrollbar-visible::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      background-color: rgba(99, 102, 241, 0.5);
+      border: 2px solid white;
+    }
+    
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    .writing-vertical {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+    }
+
+    @media (max-width: 640px) {
+      .two-col-group-name {
+        font-size: 1.1rem;
+        font-weight: 900;
+        line-height: 1.2;
+      }
+    }
+
+    .is-exporting {
+      text-rendering: auto;
+      -webkit-font-smoothing: antialiased;
+    }
+    .is-exporting .card-inner {
+      border-radius: 12px !important;
+      border: 1px solid #e5e7eb !important;
+      box-shadow: none !important;
+    }
+
+    .is-exporting .rec-sidebar {
+      display: none !important;
+    }
+
+    .font-handwritten {
+      font-family: 'Zen Maru Gothic', sans-serif;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body class="overflow-hidden">
+  <div id="root"></div>
+
+  <script type="text/babel" data-type="module">
+    import React, { useState, useMemo, useCallback, useEffect } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import { CheckCircle2, Circle, MapPin, AlertTriangle, CalendarRange, ListTodo, Star, Coffee, Download, Loader2, Music } from 'lucide-react';
+
+    const STICKY_HEADER_HEIGHT = 24;
+    const PIXELS_PER_MINUTE = 3;
+
+    function parseTime(timeStr) {
+      if (!timeStr) return { start: 0, end: 0 };
+      const parts = timeStr.split('-');
+      const parseHM = (hm) => {
+        const [h, m] = hm.split(':').map(Number);
+        return h * 60 + m;
+      };
+      return { start: parseHM(parts[0]), end: parseHM(parts[1]) };
+    }
+
+    const scheduleData = [
+      // Spotify O-EAST
+      { id: 1, stage: "Spotify O-EAST", name: "MEGAFON", time: "10:00-10:30" },
+      { id: 2, stage: "Spotify O-EAST", name: "Utage!", time: "10:30-11:00" },
+      { id: 3, stage: "Spotify O-EAST", name: "FES☆TIVE", time: "11:00-11:30" },
+      { id: 4, stage: "Spotify O-EAST", name: "LinQ", time: "11:35-12:05" },
+      { id: 5, stage: "Spotify O-EAST", name: "カラフルスクリーム", time: "12:05-12:35" },
+      { id: 6, stage: "Spotify O-EAST", name: "なみだ色の消しごむ", time: "12:35-13:05" },
+      { id: 7, stage: "Spotify O-EAST", name: "フルコース(ニューカマー)", time: "13:10-13:35" },
+      { id: 8, stage: "Spotify O-EAST", name: "Rain Tree", time: "13:25-13:55" },
+      { id: 9, stage: "Spotify O-EAST", name: "Merry BAD TUNE.", time: "13:55-14:25" },
+      { id: 10, stage: "Spotify O-EAST", name: "夜光性アミューズ", time: "14:25-14:55" },
+      { id: 11, stage: "Spotify O-EAST", name: "ドラマチックレコード", time: "15:05-15:35" },
+      { id: 12, stage: "Spotify O-EAST", name: "INUWASI", time: "15:35-16:05" },
+      { id: 13, stage: "Spotify O-EAST", name: "NEO JAPONISM", time: "16:05-16:35" },
+      { id: 14, stage: "Spotify O-EAST", name: "虹のコンキスタドール", time: "16:40-17:10" },
+      { id: 15, stage: "Spotify O-EAST", name: "わーすた", time: "17:10-17:40" },
+      { id: 16, stage: "Spotify O-EAST", name: "iLiFE!", time: "17:40-18:10" },
+      { id: 17, stage: "Spotify O-EAST", name: "SKE48", time: "18:10-18:40" },
+      { id: 18, stage: "Spotify O-EAST", name: "#ババババンビ", time: "18:45-19:20" },
+      { id: 19, stage: "Spotify O-EAST", name: "Appare!", time: "19:20-19:55" },
+      { id: 20, stage: "Spotify O-EAST", name: "GANG PARADE", time: "19:55-20:30" },
+
+      // Spotify O-WEST
+      { id: 21, stage: "Spotify O-WEST", name: "こみっきゅおん！", time: "10:05-10:35" },
+      { id: 22, stage: "Spotify O-WEST", name: "#よーよーよー", time: "10:35-11:05" },
+      { id: 23, stage: "Spotify O-WEST", name: "テンシメシ໒꒱", time: "11:05-11:35" },
+      { id: 24, stage: "Spotify O-WEST", name: "SITUASION", time: "11:40-12:10" },
+      { id: 25, stage: "Spotify O-WEST", name: "PIGMONZ", time: "12:10-12:40" },
+      { id: 26, stage: "Spotify O-WEST", name: "SUPER☆GiRLS", time: "12:45-13:15" },
+      { id: 27, stage: "Spotify O-WEST", name: "Palette Parade", time: "13:05-13:35" },
+      { id: 28, stage: "Spotify O-WEST", name: "MAGICAL SPEC", time: "13:35-14:05" },
+      { id: 29, stage: "Spotify O-WEST", name: "すべての瞬間は君だった。", time: "14:05-14:35" },
+      { id: 30, stage: "Spotify O-WEST", name: "かすみ草とステラ", time: "15:15-15:45" },
+      { id: 31, stage: "Spotify O-WEST", name: "AsIs", time: "15:45-16:15" },
+      { id: 32, stage: "Spotify O-WEST", name: "chuLa", time: "16:20-16:50" },
+      { id: 33, stage: "Spotify O-WEST", name: "アンスリューム", time: "16:50-17:20" },
+      { id: 34, stage: "Spotify O-WEST", name: "Devil ANTHEM.", time: "17:20-17:50" },
+      { id: 35, stage: "Spotify O-WEST", name: "Sweet Alley", time: "17:55-18:25" },
+      { id: 36, stage: "Spotify O-WEST", name: "AOAO", time: "18:25-18:55" },
+      { id: 37, stage: "Spotify O-WEST", name: "ハルニシオン", time: "18:55-19:25" },
+      { id: 38, stage: "Spotify O-WEST", name: "fav me", time: "19:25-19:55" },
+
+      // duo MUSIC EXCHANGE
+      { id: 39, stage: "duo MUSIC EXCHANGE", name: "マジカル・パンチライン", time: "10:05-10:40" },
+      { id: 40, stage: "duo MUSIC EXCHANGE", name: "アイドルカレッジ", time: "10:40-11:10" },
+      { id: 41, stage: "duo MUSIC EXCHANGE", name: "煌めき☆アンフォレント", time: "11:10-11:40" },
+      { id: 42, stage: "duo MUSIC EXCHANGE", name: "太陽と踊れ月夜に唄え", time: "11:45-12:15" },
+      { id: 43, stage: "duo MUSIC EXCHANGE", name: "シンデレラ宣言！", time: "12:15-12:45" },
+      { id: 44, stage: "duo MUSIC EXCHANGE", name: "江籠裕奈", time: "12:45-13:15" },
+      { id: 45, stage: "duo MUSIC EXCHANGE", name: "ナナコロビヤオキ", time: "13:20-13:50" },
+      { id: 46, stage: "duo MUSIC EXCHANGE", name: "KiSS KiSS", time: "13:50-14:20" },
+      { id: 47, stage: "duo MUSIC EXCHANGE", name: "最終未来少女", time: "14:20-14:50" },
+      { id: 48, stage: "duo MUSIC EXCHANGE", name: "ラストシーン", time: "15:00-15:30" },
+      { id: 49, stage: "duo MUSIC EXCHANGE", name: "selfish", time: "15:30-16:00" },
+      { id: 50, stage: "duo MUSIC EXCHANGE", name: "衛星とカラテア", time: "16:00-16:30" },
+      { id: 51, stage: "duo MUSIC EXCHANGE", name: "THE ENCORE", time: "16:35-17:05" },
+      { id: 52, stage: "duo MUSIC EXCHANGE", name: "豆柴の大群", time: "17:05-17:35" },
+      { id: 53, stage: "duo MUSIC EXCHANGE", name: "PIGGS", time: "17:35-18:05" },
+      { id: 54, stage: "duo MUSIC EXCHANGE", name: "feelNEO", time: "18:10-18:40" },
+      { id: 55, stage: "duo MUSIC EXCHANGE", name: "Kolokol", time: "18:40-19:10" },
+      { id: 56, stage: "duo MUSIC EXCHANGE", name: "fishbowl", time: "19:10-19:40" },
+      { id: 57, stage: "duo MUSIC EXCHANGE", name: "タイトル未定", time: "19:40-20:10" },
+
+      // WOMB
+      { id: 58, stage: "WOMB", name: "Maison de Queen", time: "10:05-10:30" },
+      { id: 59, stage: "WOMB", name: "zanka", time: "10:30-10:55" },
+      { id: 60, stage: "WOMB", name: "HIBANA", time: "10:55-11:20" },
+      { id: 61, stage: "WOMB", name: "ラナキュラ", time: "11:25-11:50" },
+      { id: 62, stage: "WOMB", name: "My Stage", time: "11:50-12:15" },
+      { id: 63, stage: "WOMB", name: "Bunny La Crew", time: "12:15-12:40" },
+      { id: 64, stage: "WOMB", name: "Melty Bear", time: "12:45-13:10" },
+      { id: 65, stage: "WOMB", name: "Pastel Closet", time: "13:10-13:35" },
+      { id: 66, stage: "WOMB", name: "Onephony", time: "13:35-14:00" },
+      { id: 67, stage: "WOMB", name: "ミームトーキョー", time: "14:10-14:35" },
+      { id: 68, stage: "WOMB", name: "Mirror,Mirror", time: "14:35-15:00" },
+      { id: 69, stage: "WOMB", name: "ジエメイ", time: "15:00-15:25" },
+      { id: 70, stage: "WOMB", name: "サクヤコノハナ", time: "15:30-15:55" },
+      { id: 71, stage: "WOMB", name: "ドレスコード", time: "15:55-16:20" },
+      { id: 72, stage: "WOMB", name: "log you", time: "16:20-16:45" },
+      { id: 73, stage: "WOMB", name: "君と見るそら", time: "16:50-17:15" },
+      { id: 74, stage: "WOMB", name: "SAI²Rium", time: "17:15-17:40" },
+      { id: 75, stage: "WOMB", name: "パラディーク", time: "17:40-18:05" },
+      { id: 76, stage: "WOMB", name: "アップアップガールズ（仮）", time: "18:10-18:35" },
+      { id: 77, stage: "WOMB", name: "ネコプラpixx.", time: "18:35-19:00" },
+      { id: 78, stage: "WOMB", name: "ルルネージュ", time: "19:00-19:25" },
+      { id: 79, stage: "WOMB", name: "MyDearDarlin'", time: "19:25-19:50" },
+
+      // clubasia
+      { id: 80, stage: "clubasia", name: "Honey Devil", time: "10:10-10:35" },
+      { id: 81, stage: "clubasia", name: "虹色の飛行少女", time: "10:35-11:00" },
+      { id: 82, stage: "clubasia", name: "KissBee", time: "11:00-11:25" },
+      { id: 83, stage: "clubasia", name: "himawari(船橋)", time: "11:30-11:55" },
+      { id: 84, stage: "clubasia", name: "さとりモンスター", time: "11:55-12:20" },
+      { id: 85, stage: "clubasia", name: "ポンコツコンボ", time: "12:20-12:45" },
+      { id: 86, stage: "clubasia", name: "キングサリ", time: "12:50-13:15" },
+      { id: 87, stage: "clubasia", name: "Ringwanderung", time: "13:15-13:40" },
+      { id: 88, stage: "clubasia", name: "THE ORCHESTRA TOKYO", time: "13:40-14:05" },
+      { id: 89, stage: "clubasia", name: "KRD8", time: "14:15-14:40" },
+      { id: 90, stage: "clubasia", name: "STAiNY", time: "14:40-15:05" },
+      { id: 91, stage: "clubasia", name: "アキシブproject", time: "15:05-15:30" },
+      { id: 92, stage: "clubasia", name: "アルテミスの翼", time: "15:35-16:00" },
+      { id: 93, stage: "clubasia", name: "amini", time: "16:00-16:25" },
+      { id: 94, stage: "clubasia", name: "RAViDavi", time: "16:25-16:50" },
+      { id: 95, stage: "clubasia", name: "myojou", time: "16:55-17:20" },
+      { id: 96, stage: "clubasia", name: "フルコース", time: "17:20-17:45" },
+      { id: 97, stage: "clubasia", name: "透色ドロップ", time: "17:45-18:10" },
+      { id: 98, stage: "clubasia", name: "HelloYouth", time: "18:15-18:40" },
+      { id: 99, stage: "clubasia", name: "SAISON", time: "18:40-19:05" },
+      { id: 100, stage: "clubasia", name: "Peel the Apple", time: "19:05-19:30" },
+      { id: 101, stage: "clubasia", name: "可憐なアイボリー", time: "19:30-19:55" },
+
+      // SHIBUYA RING
+      { id: 102, stage: "SHIBUYA RING", name: "コングラッチェ！", time: "10:05-10:30" },
+      { id: 103, stage: "SHIBUYA RING", name: "ニコルポップ", time: "10:30-10:55" },
+      { id: 104, stage: "SHIBUYA RING", name: "ラビットビット", time: "10:55-11:20" },
+      { id: 105, stage: "SHIBUYA RING", name: "リルリボン", time: "11:25-11:50" },
+      { id: 106, stage: "SHIBUYA RING", name: "SCRAMBLE SMILE", time: "11:50-12:15" },
+      { id: 107, stage: "SHIBUYA RING", name: "なんキニ！", time: "12:15-12:40" },
+      { id: 108, stage: "SHIBUYA RING", name: "AFTERS", time: "12:45-13:10" },
+      { id: 109, stage: "SHIBUYA RING", name: "JINKS", time: "13:10-13:35" },
+      { id: 110, stage: "SHIBUYA RING", name: "Tohkei", time: "13:35-14:00" },
+      { id: 111, stage: "SHIBUYA RING", name: "ハレとハレ！", time: "14:10-14:35" },
+      { id: 112, stage: "SHIBUYA RING", name: "パラレルサイダー", time: "14:35-15:00" },
+      { id: 113, stage: "SHIBUYA RING", name: "テラテラ", time: "15:00-15:25" },
+      { id: 114, stage: "SHIBUYA RING", name: "ZUTTOMOTTO", time: "15:30-15:55" },
+      { id: 115, stage: "SHIBUYA RING", name: "猫を演じる少女", time: "15:55-16:20" },
+      { id: 116, stage: "SHIBUYA RING", name: "シャルロット", time: "16:20-16:45" },
+      { id: 117, stage: "SHIBUYA RING", name: "すーぱーぷーばぁー!!", time: "16:50-17:15" },
+      { id: 118, stage: "SHIBUYA RING", name: "LarmeR", time: "17:15-17:40" },
+      { id: 119, stage: "SHIBUYA RING", name: "O₂", time: "17:40-18:05" },
+      { id: 120, stage: "SHIBUYA RING", name: "フューチャーサイダー", time: "18:10-18:35" },
+      { id: 121, stage: "SHIBUYA RING", name: "ideal peco", time: "18:35-19:00" },
+      { id: 122, stage: "SHIBUYA RING", name: "ROOKEY✕ROOKEY", time: "19:00-19:25" },
+      { id: 123, stage: "SHIBUYA RING", name: "I MY ME MINE", time: "19:25-19:50" },
+
+      // Spotify O-Crest
+      { id: 124, stage: "Spotify O-Crest", name: "ParaLuLu", time: "10:10-10:35" },
+      { id: 125, stage: "Spotify O-Crest", name: "COLOR OF COLOR", time: "10:35-11:00" },
+      { id: 126, stage: "Spotify O-Crest", name: "かすみ草とステラ", time: "11:00-11:25" },
+      { id: 127, stage: "Spotify O-Crest", name: "抜けてるくらいがちょうどいい", time: "11:30-11:55" },
+      { id: 128, stage: "Spotify O-Crest", name: "ドラマチックレコード", time: "11:55-12:20" },
+      { id: 129, stage: "Spotify O-Crest", name: "点染テンセイ少女。", time: "12:20-12:45" },
+      { id: 130, stage: "Spotify O-Crest", name: "フューチャーサイダー", time: "12:50-13:15" },
+      { id: 131, stage: "Spotify O-Crest", name: "#Mooove!", time: "13:15-13:40" },
+      { id: 132, stage: "Spotify O-Crest", name: "Toi Toi Toi", time: "13:40-14:05" },
+      { id: 133, stage: "Spotify O-Crest", name: "CURE'T", time: "14:15-14:40" },
+      { id: 134, stage: "Spotify O-Crest", name: "metarium", time: "14:40-15:05" },
+      { id: 135, stage: "Spotify O-Crest", name: "SEKAIΣ", time: "15:05-15:30" },
+      { id: 136, stage: "Spotify O-Crest", name: "FES☆TIVE", time: "15:35-16:00" },
+      { id: 137, stage: "Spotify O-Crest", name: "Utage!", time: "16:00-16:25" },
+      { id: 138, stage: "Spotify O-Crest", name: "ナナコロビヤオキ", time: "16:25-16:50" },
+      { id: 139, stage: "Spotify O-Crest", name: "CAL&RES", time: "16:55-17:20" },
+      { id: 140, stage: "Spotify O-Crest", name: "FULIT BOX", time: "17:20-17:45" },
+      { id: 141, stage: "Spotify O-Crest", name: "Hey!Mommy!", time: "17:45-18:10" },
+      { id: 142, stage: "Spotify O-Crest", name: "いつかの夜に僕たちが、", time: "18:15-18:40" },
+      { id: 143, stage: "Spotify O-Crest", name: "ワガママなラストノート", time: "18:40-19:05" },
+      { id: 144, stage: "Spotify O-Crest", name: "Lily/ash", time: "19:05-19:30" },
+      { id: 145, stage: "Spotify O-Crest", name: "RINCENT♯", time: "19:30-19:55" },
+
+      // Spotify O-nest
+      { id: 146, stage: "Spotify O-nest", name: "月に足跡を残した少女達は...", time: "10:10-10:35" },
+      { id: 147, stage: "Spotify O-nest", name: "ヒロインズ研究生大阪", time: "10:35-11:00" },
+      { id: 148, stage: "Spotify O-nest", name: "STAiNY", time: "10:55-11:20" },
+      { id: 149, stage: "Spotify O-nest", name: "Ma'Scar'Piece", time: "11:25-11:50" },
+      { id: 150, stage: "Spotify O-nest", name: "XINXIN", time: "11:50-12:15" },
+      { id: 151, stage: "Spotify O-nest", name: "Axelight", time: "12:15-12:40" },
+      { id: 152, stage: "Spotify O-nest", name: "限りなく白く", time: "12:45-13:10" },
+      { id: 153, stage: "Spotify O-nest", name: "ICECREAM SCREAM", time: "13:10-13:35" },
+      { id: 154, stage: "Spotify O-nest", name: "君と見るそら", time: "13:35-14:00" },
+      { id: 155, stage: "Spotify O-nest", name: "Payrin's", time: "14:10-14:35" },
+      { id: 156, stage: "Spotify O-nest", name: "buGG", time: "14:35-15:00" },
+      { id: 157, stage: "Spotify O-nest", name: "Malcolm Mask McLaren", time: "15:00-15:25" },
+      { id: 158, stage: "Spotify O-nest", name: "アップアップガールズ（プロレス）", time: "15:30-15:55" },
+      { id: 159, stage: "Spotify O-nest", name: "My Stage", time: "15:55-16:20" },
+      { id: 160, stage: "Spotify O-nest", name: "雨のち、ハレーション", time: "16:20-16:45" },
+      { id: 161, stage: "Spotify O-nest", name: "しろもん", time: "16:50-17:15" },
+      { id: 162, stage: "Spotify O-nest", name: "なみだ色の消しごむ", time: "17:15-17:40" },
+      { id: 163, stage: "Spotify O-nest", name: "カラフルスクリーム", time: "17:40-18:05" },
+      { id: 164, stage: "Spotify O-nest", name: "にっぽん！真骨頂", time: "18:10-18:35" },
+      { id: 165, stage: "Spotify O-nest", name: "KRD8", time: "18:35-19:00" },
+      { id: 166, stage: "Spotify O-nest", name: "シュレーディンガーの犬", time: "19:00-19:25" },
+      { id: 167, stage: "Spotify O-nest", name: "LADYBABY", time: "19:25-19:50" }
+    ];
+
+    const stageColors = {
+      "Spotify O-EAST": "bg-red-500 text-white", "Spotify O-WEST": "bg-orange-500 text-white",
+      "duo MUSIC EXCHANGE": "bg-green-500 text-white", "WOMB": "bg-pink-500 text-white",
+      "clubasia": "bg-blue-500 text-white", "SHIBUYA RING": "bg-teal-500 text-white",
+      "Spotify O-Crest": "bg-sky-400 text-white", "Spotify O-nest": "bg-purple-500 text-white"
+    };
+
+    const stageHexColors = {
+      "Spotify O-EAST": "#ef4444", "Spotify O-WEST": "#f97316",
+      "duo MUSIC EXCHANGE": "#22c55e", "WOMB": "#ec4899",
+      "clubasia": "#3b82f6", "SHIBUYA RING": "#14b8a6",
+      "Spotify O-Crest": "#38bdf8", "Spotify O-nest": "#a855f7"
+    };
+
+    const stageBorderColors = {
+      "Spotify O-EAST": "border-red-500", "Spotify O-WEST": "border-orange-500",
+      "duo MUSIC EXCHANGE": "border-green-500", "WOMB": "border-pink-500",
+      "clubasia": "border-blue-500", "SHIBUYA RING": "border-teal-500",
+      "Spotify O-Crest": "border-sky-400", "Spotify O-nest": "border-purple-500"
+    };
+
+    const TimetableCard = React.memo(({ item, selections, songMemo, onSongChange, onRemove, isGenerating }) => {
+      const isRecommended = selections[item.id] === 'recommended';
+      const borderColor = stageBorderColors[item.stage] || 'border-gray-800';
+      const badgeColor = stageColors[item.stage] || 'bg-gray-800 text-white';
+
+      const getDynamicFontSize = (name) => {
+          if (!isGenerating) return {};
+          if (name.length > 15) return { fontSize: '13px' };
+          if (name.length > 10) return { fontSize: '15px' };
+          return { fontSize: '18px' };
+      };
+
+      return (
+        <div className="item-wrapper relative flex flex-col w-full h-full">
+          <div className={`card-inner rounded-xl flex flex-row relative border border-gray-200 shadow-sm overflow-hidden min-h-[60px] transition-all flex-1
+            ${isRecommended ? 'bg-gradient-to-br from-white via-white to-orange-50/50' : 'bg-white'}`}>
+
+            {isRecommended && !isGenerating && (
+              <div className="rec-sidebar w-5 sm:w-6 bg-gradient-to-b from-orange-100 via-yellow-200 to-white flex flex-col items-center justify-start py-1.5 shrink-0 border-r border-orange-200/50">
+                 <div className="w-3.5 h-3.5 bg-white/90 rounded-full flex items-center justify-center mb-1 shadow-sm"><Star size={9} className="fill-orange-400 text-orange-400" /></div>
+                 <div className="writing-vertical flex items-center justify-center font-handwritten">
+                   <span className="export-text-lift text-[8px] sm:text-[9.5px] font-black text-orange-600 tracking-tighter force-text-center">おすすめ</span>
+                 </div>
+              </div>
+            )}
+
+            <div className={`image-card-body flex-1 p-1.5 sm:p-2 flex flex-row items-center border-l-4 ${borderColor} min-w-0 h-full relative`}>
+               <div className={`left-col-meta flex flex-col items-center shrink-0 ${isGenerating ? 'w-[60px]' : 'w-[70px] sm:w-[90px]'} mr-1.5 sm:mr-2`}>
+                  <div className="px-1 py-0.5 rounded bg-gray-100/80 mb-0.5 w-full text-center time-container">
+                    <span className="export-text-lift font-mono font-bold text-[8.5px] sm:text-[10px] leading-none text-gray-700 whitespace-nowrap">{item.time}</span>
+                  </div>
+                  <div className={`px-1 py-0.5 rounded-full w-full text-center ${badgeColor} stage-badge overflow-hidden`}>
+                    <span className="export-text-lift text-[7px] sm:text-[8px] font-bold whitespace-nowrap overflow-hidden leading-none truncate-stage">
+                      {item.stage.replace('Spotify ', '')}
+                    </span>
+                  </div>
+               </div>
+
+               <div className="center-col-name flex-1 flex flex-col justify-center min-w-0 px-1 overflow-hidden">
+                  <div 
+                    className={`font-bold export-text-lift two-col-group-name text-gray-900 text-left w-full ${isRecommended ? 'font-black' : ''}`}
+                    style={{ 
+                      ...getDynamicFontSize(item.name), 
+                      lineHeight: '1.2',
+                      textAlign: 'center',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flex: 1
+                    }}
+                  >
+                    {item.name}
+                  </div>
+                  {isRecommended && (
+                    <div className="song-info-container flex items-center gap-1 mt-0.5 overflow-hidden justify-center">
+                       <Music size={isGenerating ? 7 : 8} className="text-orange-300 shrink-0 song-decoration-icon" />
+                       {!isGenerating ? (
+                         <input 
+                           type="text" 
+                           placeholder="曲名" 
+                           value={songMemo} 
+                           onChange={(e) => onSongChange(item.id, e.target.value)} 
+                           className="song-input-field text-[8.5px] font-bold bg-transparent w-full focus:outline-none placeholder-orange-100 text-orange-900 leading-none" 
+                         />
+                       ) : (
+                         <span className="text-[10px] font-bold text-orange-700 truncate leading-none song-memo-text-node">{songMemo}</span>
+                       )}
+                    </div>
+                  )}
+               </div>
+               
+               {isGenerating && isRecommended && (
+                 <div className="absolute top-1 right-1 text-orange-500">
+                   <Star size={8} className="fill-orange-500" />
+                 </div>
+               )}
+
+               {!isGenerating && <button onClick={() => onRemove(item.id)} className="shrink-0 p-1 text-gray-300 hover:text-red-500 transition-colors ml-1" aria-label="削除"><span className="text-[12px] font-bold">×</span></button>}
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    const AllStageTimetable = ({ processedSchedule, selections, toggleSelection, recommendedCount, busyRanges, MIN_TIME }) => {
+      const stages = useMemo(() => Array.from(new Set(processedSchedule.map(item => item.stage))), [processedSchedule]);
+      const stageLightColors = { "Spotify O-EAST": "bg-red-500/10", "Spotify O-WEST": "bg-orange-500/10", "duo MUSIC EXCHANGE": "bg-green-500/10", "WOMB": "bg-pink-500/10", "clubasia": "bg-blue-500/10", "SHIBUYA RING": "bg-teal-500/10", "Spotify O-Crest": "bg-sky-400/10", "Spotify O-nest": "bg-purple-500/10" };
+
+      return (
+        <div className="flex flex-col h-full overflow-hidden">
+          <div className="px-4 py-1 flex-none bg-white/80 backdrop-blur-sm z-20">
+            <div className="flex items-center justify-between">
+              <p className="text-gray-600 text-[10px] m-0 font-bold tracking-tight">タップで選択 / 通常→おすすめ切替</p>
+              <div className="inline-flex items-center px-2 py-0.5 bg-yellow-100 border border-yellow-200 rounded shrink-0">
+                <Star size={10} className="fill-yellow-500 text-yellow-500 mr-1" /><span className="text-[10px] font-bold text-yellow-800 leading-none">おすすめ {recommendedCount}/5</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex-1 overflow-x-auto scrollbar-visible mt-1 px-4 relative">
+            <div className="flex flex-row gap-3 min-w-max h-full overflow-y-auto pb-32 hide-scrollbar relative">
+              <div className="absolute top-0 left-0 w-full pointer-events-none z-0">
+                {busyRanges.map((range, i) => (
+                  <div key={i} className={`absolute w-full border-y border-black/5 ${stageLightColors[range.stage] || 'bg-indigo-500/10'}`} style={{ top: `${STICKY_HEADER_HEIGHT + 6 + (range.start - MIN_TIME) * PIXELS_PER_MINUTE}px`, height: `${(range.end - range.start) * PIXELS_PER_MINUTE}px` }} />
+                ))}
+              </div>
+              {stages.map(stage => {
+                const stageItems = processedSchedule.filter(item => item.stage === stage).sort((a,b) => a.parsedTime.start - b.parsedTime.start);
+                if (stageItems.length === 0) return null;
+                let lastEnd = MIN_TIME;
+                return (
+                  <div key={stage} className="w-[80vw] sm:w-[280px] flex-shrink-0 flex flex-col bg-white/40 rounded-xl shadow-sm border border-gray-100 h-fit min-h-full z-10">
+                    <div className={`px-3 py-1 font-bold flex items-center gap-1.5 sticky top-0 z-30 text-xs rounded-t-xl ${stageColors[stage] || 'bg-gray-800 text-white'}`} style={{ height: `${STICKY_HEADER_HEIGHT}px` }}><MapPin size={14} /><span className="truncate">{stage}</span></div>
+                    <div className="p-1.5 flex-1 relative bg-transparent">
+                      {stageItems.map(item => {
+                        const gap = item.parsedTime.start - lastEnd; lastEnd = item.parsedTime.end;
+                        const isSel = selections[item.id];
+                        return (
+                          <React.Fragment key={item.id}>
+                            {gap > 0 && <div style={{ height: `${gap * PIXELS_PER_MINUTE}px` }} />}
+                            <button onClick={() => toggleSelection(item.id)} style={{ height: `${(item.parsedTime.end - item.parsedTime.start) * PIXELS_PER_MINUTE}px` }} className={`w-full text-left px-1.5 py-0 rounded-md flex items-center justify-between border overflow-hidden ${isSel ? `${stageColors[stage]} shadow-md border-transparent` : 'bg-white border-gray-200 hover:border-gray-300'}`}>
+                              <div className="flex flex-col justify-center h-full w-full pr-1 overflow-hidden whitespace-nowrap text-ellipsis">
+                                <span className={`text-[9px] font-mono whitespace-nowrap leading-none mb-0.5 ${isSel ? 'text-white/80' : 'text-gray-500'}`}>{item.time}</span>
+                                <span className={`font-bold text-[13px] sm:text-[15px] leading-tight text-left truncate ${isSel ? 'text-white' : 'text-gray-900'}`}>{item.name}</span>
+                              </div>
+                              <div className="flex-shrink-0">{selections[item.id] === 'recommended' ? <Star className="text-yellow-300 fill-yellow-300" size={14} /> : (isSel ? <CheckCircle2 className="text-white" size={14} /> : <Circle className="text-gray-300" size={14} />)}</div>
+                            </button>
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    function App() {
+      const [activeTab, setActiveTab] = useState('all');
+      const [selections, setSelections] = useState({}); 
+      const [songMemos, setSongMemos] = useState({}); 
+      const [userName, setUserName] = useState('');
+      const [isGenerating, setIsGenerating] = useState(false);
+
+      const processedSchedule = useMemo(() => scheduleData.map(item => ({ ...item, parsedTime: parseTime(item.time) })), []);
+      const MIN_TIME = useMemo(() => Math.min(...processedSchedule.map(item => item.parsedTime.start)), [processedSchedule]);
+      const mySchedule = useMemo(() => processedSchedule.filter(s => selections[s.id]).sort((a, b) => a.parsedTime.start - b.parsedTime.start), [processedSchedule, selections]);
+      const recommendedCount = useMemo(() => Object.values(selections).filter(v => v === 'recommended').length, [selections]);
+
+      const busyRanges = useMemo(() => {
+        return Object.keys(selections).map(id => {
+            const item = processedSchedule.find(p => p.id === parseInt(id));
+            return item ? { ...item.parsedTime, stage: item.stage } : null;
+        }).filter(Boolean);
+      }, [selections, processedSchedule]);
+
+      const toggleSelection = useCallback((id) => {
+        setSelections(prev => {
+          const next = { ...prev };
+          if (!prev[id]) next[id] = 'normal';
+          else if (prev[id] === 'normal') {
+            if (Object.values(prev).filter(v => v === 'recommended').length >= 5) {
+              delete next[id];
+            } else next[id] = 'recommended';
+          } else delete next[id];
+          return next;
+        });
+      }, []);
+
+      const onRemove = useCallback((id) => setSelections(prev => { const n = {...prev}; delete n[id]; return n; }), []);
+      const onSongChange = useCallback((id, val) => setSongMemos(prev => ({ ...prev, [id]: val })), []);
+      const handleTabChange = useCallback((tab) => { setActiveTab(tab); }, []);
+
+      const getScheduleWithGaps = useCallback(() => {
+          const elements = [];
+          mySchedule.forEach((item, i) => {
+              elements.push({ type: 'card', data: item });
+              const next = mySchedule[i+1];
+              if (next && (next.parsedTime.start - item.parsedTime.end) >= 15) {
+                  elements.push({ type: 'gap', minutes: (next.parsedTime.start - item.parsedTime.end) });
+              }
+          });
+          return elements;
+      }, [mySchedule]);
+
+      const handleDownload = async () => {
+        setIsGenerating(true);
+        await new Promise(r => setTimeout(r, 500));
+        
+        try {
+          const sourceElement = document.getElementById('my-schedule-content');
+          if (!sourceElement) return;
+
+          const exportWidth = 720; 
+          const exportHeight = 960; 
+          const headerHeight = 100; 
+          const marginVal = 13.33; 
+          const gapBetweenItems = 2; 
+          
+          const availableBodyHeight = exportHeight - headerHeight - (marginVal * 2);
+          const rowHeight = (availableBodyHeight - (9 * gapBetweenItems)) / 10; 
+
+          const wrapper = document.createElement('div');
+          wrapper.style.width = `${exportWidth}px`;
+          wrapper.style.height = `${exportHeight}px`;
+          wrapper.className = 'is-exporting'; 
+          wrapper.style.backgroundColor = '#f9fafb';
+          wrapper.style.position = 'fixed';
+          wrapper.style.left = '-9999px';
+          wrapper.style.top = '0';
+          wrapper.style.display = 'flex';
+          wrapper.style.flexDirection = 'column';
+          wrapper.style.overflow = 'hidden';
+
+          const elements = getScheduleWithGaps();
+          const clone = sourceElement.cloneNode(true);
+          clone.style.width = '100%';
+          clone.style.height = '100%';
+          clone.style.paddingTop = '0px';
+
+          const clonedRecCards = Array.from(clone.querySelectorAll('.item-wrapper'));
+
+          const headerArea = clone.querySelector('.header-content-area');
+          if (headerArea) {
+            headerArea.style.height = `${headerHeight}px`;
+            headerArea.style.minHeight = `${headerHeight}px`;
+            headerArea.style.backgroundColor = 'transparent'; 
+            headerArea.style.border = 'none'; 
+            
+            headerArea.innerHTML = `
+              <div class="w-full flex flex-col items-center justify-center h-full bg-transparent">
+                <div class="flex items-center gap-4 mb-1">
+                  <span class="text-[28px] font-black text-indigo-900 tracking-tighter">IDORISE!! FESTIVAL 2026</span>
+                  <span class="text-rose-600 font-black text-[14px] leading-none">Day2: 3/8(日)</span>
+                </div>
+                <div class="flex items-center gap-1">
+                   <span class="text-[22px] font-black text-gray-900">${userName || '名前'}</span>
+                   <span class="text-[18px] font-bold text-gray-500">のタイテ</span>
+                </div>
+              </div>
+            `;
+          }
+
+          const timelineContainer = clone.querySelector('.timeline-outer-container');
+          if (timelineContainer) {
+            timelineContainer.style.flex = '1';
+            timelineContainer.style.display = 'flex';
+            timelineContainer.style.flexDirection = 'row'; 
+            timelineContainer.style.gap = '10px';
+            timelineContainer.style.padding = `${marginVal}px 10px`;
+            timelineContainer.innerHTML = ''; 
+
+            const columnsData = elements.length > 10 ? [elements.slice(0, 10), elements.slice(10)] : [elements];
+
+            columnsData.forEach((colItems) => {
+               const col = document.createElement('div');
+               col.style.flex = '1';
+               col.style.display = 'flex';
+               col.style.flexDirection = 'column';
+               col.style.gap = `${gapBetweenItems}px`; 
+               col.style.height = '100%';
+
+               colItems.forEach(el => {
+                  const elWrapper = document.createElement('div');
+                  elWrapper.style.height = `${rowHeight}px`; 
+                  elWrapper.style.display = 'flex';
+                  elWrapper.style.flexDirection = 'column';
+
+                  if (el.type === 'card') {
+                      const originalIdxInMySchedule = mySchedule.indexOf(el.data);
+                      const isRec = selections[el.data.id] === 'recommended';
+                      const itemClone = clonedRecCards[originalIdxInMySchedule];
+
+                      if (itemClone) {
+                          itemClone.style.height = '100%';
+                          itemClone.style.flex = '1';
+                          
+                          const inner = itemClone.querySelector('.card-inner');
+                          if(inner) {
+                              inner.style.height = '100%';
+                              inner.style.border = '1px solid #e5e7eb';
+                              inner.style.position = 'relative';
+                              
+                              if (isRec) {
+                                inner.style.background = 'linear-gradient(135deg, #fff7ed 0%, #ffffff 100%)';
+                                const recText = document.createElement('div');
+                                recText.textContent = 'おすすめ';
+                                recText.style.position = 'absolute';
+                                recText.style.right = '4px';
+                                recText.style.top = '0';
+                                recText.style.bottom = '0';
+                                recText.style.display = 'flex';
+                                recText.style.alignItems = 'center';
+                                recText.style.writingMode = 'vertical-rl';
+                                recText.style.fontSize = '8px';
+                                recText.style.fontWeight = '900';
+                                recText.style.color = '#f97316';
+                                recText.style.letterSpacing = '1px';
+                                recText.style.transform = 'translateY(6px)';
+                                inner.appendChild(recText);
+                              } else {
+                                inner.style.background = '#ffffff';
+                              }
+                          }
+
+                          const body = itemClone.querySelector('.image-card-body');
+                          if(body) {
+                            body.style.padding = '2px 6px';
+                            body.style.height = '100%';
+                            body.style.borderLeft = `4px solid ${stageHexColors[el.data.stage] || '#000'}`;
+                            body.style.display = 'flex';
+                            body.style.alignItems = 'center';
+                          }
+                          
+                          const leftCol = body?.querySelector('.left-col-meta');
+                          if(leftCol) {
+                              leftCol.style.width = '60px';
+                              leftCol.style.marginRight = '4px';
+                              leftCol.style.transform = 'translateY(-8px)';
+                              
+                              const timeDiv = leftCol.querySelector('.time-container');
+                              if(timeDiv) {
+                                  timeDiv.style.backgroundColor = 'transparent';
+                                  timeDiv.style.padding = '0';
+                                  timeDiv.style.marginBottom = '0';
+                              }
+
+                              const stBadge = leftCol.querySelector('.stage-badge');
+                              if(stBadge) {
+                                  stBadge.style.backgroundColor = 'transparent';
+                                  stBadge.style.borderRadius = '0';
+                                  stBadge.style.padding = '0';
+                                  stBadge.style.textAlign = 'center';
+                                  const stage = el.data.stage;
+                                  stBadge.style.color = stageHexColors[stage] || '#000000';
+                                  const span = stBadge.querySelector('span');
+                                  if(span) {
+                                      span.textContent = el.data.stage.replace('Spotify O-', '').replace('Spotify ', '');
+                                      span.style.fontWeight = '900'; 
+                                      span.style.fontSize = '11.5px';
+                                      span.style.lineHeight = '1.5';
+                                      span.style.display = 'block';
+                                      span.style.paddingBottom = '2px';
+                                      span.style.overflow = 'visible'; 
+                                  }
+                              }
+                          }
+
+                          const centerCol = body?.querySelector('.center-col-name');
+                          if(centerCol) {
+                              centerCol.style.alignItems = 'center';
+                              centerCol.style.justifyContent = 'center';
+                              centerCol.style.textAlign = 'center';
+                              centerCol.style.flex = '1';
+                              centerCol.style.overflow = 'visible';
+                              centerCol.style.transform = isRec ? 'translateY(2px)' : 'translateY(-2px)';
+                              
+                              const nameTxt = centerCol.querySelector('.two-col-group-name');
+                              if(nameTxt) {
+                                  const len = el.data.name.length;
+                                  nameTxt.style.fontSize = len > 15 ? '13px' : len > 10 ? '15px' : '18px';
+                                  nameTxt.style.fontWeight = '900';
+                                  nameTxt.style.lineHeight = '1.2';
+                                  nameTxt.style.textAlign = 'center';
+                                  nameTxt.style.whiteSpace = 'normal';
+                              }
+                              const songCont = centerCol.querySelector('.song-info-container');
+                              if(songCont) {
+                                songCont.style.marginTop = '4px';
+                                songCont.style.justifyContent = 'center';
+                                songCont.style.alignItems = 'center'; 
+                                songCont.style.overflow = 'visible';
+                                songCont.style.display = 'flex';
+                                
+                                const icon = songCont.querySelector('.song-decoration-icon');
+                                if(icon) icon.style.transform = 'translateY(2px)';
+
+                                const memoSpan = songCont.querySelector('.song-memo-text-node');
+                                if (memoSpan) {
+                                    memoSpan.style.fontSize = '10px'; 
+                                    memoSpan.style.lineHeight = '1.5'; 
+                                    memoSpan.style.display = 'inline-block';
+                                    memoSpan.style.paddingBottom = '4px'; 
+                                    memoSpan.textContent = songMemos[el.data.id] || "";
+                                }
+                              }
+                          }
+                          
+                          itemClone.querySelector('button[aria-label="削除"]')?.remove();
+                          itemClone.querySelector('.absolute.top-1.right-1')?.remove();
+                          itemClone.querySelector('.rec-sidebar')?.remove();
+
+                          elWrapper.appendChild(itemClone);
+                      }
+                  } else {
+                      const gapDiv = document.createElement('div');
+                      gapDiv.style.height = '30%'; 
+                      gapDiv.style.marginTop = 'auto';
+                      gapDiv.style.marginBottom = 'auto';
+                      gapDiv.style.backgroundColor = '#f3f4f6';
+                      gapDiv.style.borderRadius = '8px';
+                      gapDiv.style.display = 'flex';
+                      gapDiv.style.alignItems = 'center';
+                      gapDiv.style.justifyContent = 'center';
+                      gapDiv.style.fontSize = '10px';
+                      gapDiv.style.fontWeight = 'bold';
+                      gapDiv.style.color = '#9ca3af';
+                      gapDiv.textContent = `☕️ ${el.minutes}分 空き`;
+                      gapDiv.style.paddingBottom = '6px';
+                      elWrapper.appendChild(gapDiv);
+                  }
+                  col.appendChild(elWrapper);
+               });
+               
+               if(colItems.length < 10) {
+                   for(let i=0; i < (10 - colItems.length); i++){
+                       const pad = document.createElement('div');
+                       pad.style.height = `${rowHeight}px`;
+                       col.appendChild(pad);
+                   }
+               }
+               timelineContainer.appendChild(col);
+            });
+          }
+
+          wrapper.appendChild(clone);
+          document.body.appendChild(wrapper);
+
+          await new Promise(r => setTimeout(r, 200));
+
+          const canvas = await html2canvas(wrapper, { 
+            scale: 2, 
+            useCORS: true, 
+            backgroundColor: '#f9fafb', 
+            width: exportWidth, 
+            height: exportHeight, 
+            logging: false 
+          });
+          document.body.removeChild(wrapper);
+          const url = canvas.toDataURL('image/png');
+          const a = document.createElement('a'); 
+          a.href = url; 
+          a.download = `idorise_2026_timetable_0308.png`; 
+          a.click();
+        } catch (error) { console.error('画像生成エラー:', error); } finally { setIsGenerating(false); }
+      };
+
+      return (
+        <div className="h-screen flex flex-col overflow-hidden text-gray-900 font-sans">
+          <header className="bg-white px-4 py-2 shadow-sm z-50 flex-none border-b border-gray-100">
+            <h1 className="flex flex-row items-center justify-center gap-2 text-indigo-900">
+              <span className="text-sm sm:text-base font-black tracking-tight whitespace-nowrap">IDORISE!! FESTIVAL 2026</span>
+              <div className="flex flex-row items-center gap-1.5 h-5">
+                <div className="px-1.5 py-0 text-[9px] font-bold text-rose-600 bg-rose-50 rounded border border-rose-100 whitespace-nowrap flex items-center justify-center h-full"><span className="export-text-lift">Day2: 3/8(日)</span></div>
+                <span className="text-[9px] font-normal text-gray-500 whitespace-nowrap leading-none pt-0.5 flex items-center h-full"><span className="export-text-lift"> by ドルオタボックス</span></span>
+              </div>
+            </h1>
+          </header>
+          <main className="flex-1 overflow-hidden pb-16">
+            {activeTab === 'all' ? (
+              <AllStageTimetable processedSchedule={processedSchedule} selections={selections} toggleSelection={toggleSelection} recommendedCount={recommendedCount} busyRanges={busyRanges} MIN_TIME = {MIN_TIME} />
+            ) : (
+              <div className={`mx-auto pb-24 h-full overflow-y-auto w-full scrollbar-visible`}>
+                <div className="flex flex-col sm:flex-row items-center justify-center p-2 mb-2 mt-2 mx-auto max-w-xl">
+                  <button onClick={handleDownload} disabled={isGenerating} className="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors shadow-lg w-full sm:w-auto active:scale-95">
+                    {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}{isGenerating ? '生成中...' : '画像を保存'}
+                  </button>
+                </div>
+                <div id="my-schedule-content" className="bg-gray-50 flex flex-col w-full h-full relative pt-4 sm:pt-8">
+                  <div className="bg-white border-b border-gray-200 shrink-0 header-content-area overflow-hidden py-4 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2 w-full px-1">
+                       <div className="flex items-center gap-1.5 shrink-0 h-6"><h2 className="text-[14px] sm:text-[16px] font-black text-indigo-900 tracking-tight m-0 whitespace-nowrap export-text-lift">IDORISE!! FESTIVAL 2026</h2><div className="px-1.5 py-0 bg-rose-500 rounded-sm flex items-center justify-center h-4.5 translate-y-[1px]"><span className="export-text-lift text-[9px] sm:text-[10px] font-bold text-white leading-none">Day2: 3/8(日)</span></div></div>
+                       <div className="name-input-container border-b-2 border-indigo-300 px-1 flex items-center h-7 min-w-[120px] justify-center font-sans font-bold"><input type="text" placeholder="名前を入力" value={userName} onChange={(e) => setUserName(e.target.value)} className="name-input-field text-[14px] font-bold text-center pr-0.5 text-gray-800 bg-transparent w-[80px] focus:outline-none placeholder-gray-300" maxLength="15" /><span className="text-[12px] font-bold text-gray-600 whitespace-nowrap flex items-center h-full"><span className="export-text-lift"> のタイテ</span></span></div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center py-4 px-2 timeline-outer-container">
+                    <div className="flex flex-col gap-2 w-full max-w-xl mx-auto">
+                      {mySchedule.map((item) => (
+                        <TimetableCard 
+                          key={item.id} item={item} selections={selections}
+                          songMemo={songMemos[item.id] || ''}
+                          onSongChange={onSongChange} onRemove={onRemove} isGenerating={isGenerating}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </main>
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe z-50">
+            <div className="max-w-lg mx-auto flex">
+              <button onClick={() => handleTabChange('all')} className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors ${activeTab === 'all' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}><ListTodo size={18} /><span className="text-[10px] font-bold">全ステージ一覧</span></button>
+              <button onClick={() => handleTabChange('mine')} className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors relative ${activeTab === 'mine' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}><div className="relative"><CalendarRange size={18} />{Object.keys(selections).length > 0 && <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">{Object.keys(selections).length}</span>}</div><span className="text-[10px] font-bold">マイスケジュール</span></button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const startApp = () => {
+      const rootElement = document.getElementById('root');
+      if (rootElement) {
+        try {
+          createRoot(rootElement).render(<App />);
+        } catch (e) {
+          console.error("React render error:", e);
+        }
+      }
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startApp);
+    } else {
+      startApp();
+    }
+  </script>
+</body>
+</html>
