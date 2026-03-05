@@ -2,9 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>マイタイムテーブル作成 - IDORISE 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>マイタイムテーブル作成 v1.0 - IDORISE 2026</title>
   
+  <!-- 
+    Version: 1.0
+    Date: 2026-03-05
+    Description: 3/8 Day2 Data + Rose Accent Theme
+  -->
+
   <script src="https://cdn.tailwindcss.com"></script>
   
   <!-- 丸文字フォント -->
@@ -37,7 +43,7 @@
     }
     .scrollbar-visible::-webkit-scrollbar-thumb {
       border-radius: 5px;
-      background-color: rgba(99, 102, 241, 0.5);
+      background-color: rgba(225, 29, 72, 0.5); /* Rose opacity */
       border: 2px solid white;
     }
     
@@ -99,7 +105,7 @@
     }
 
     const scheduleData = [
-      // Spotify O-EAST
+      // Spotify O-EAST (3/8)
       { id: 1, stage: "Spotify O-EAST", name: "MEGAFON", time: "10:00-10:30" },
       { id: 2, stage: "Spotify O-EAST", name: "Utage!", time: "10:30-11:00" },
       { id: 3, stage: "Spotify O-EAST", name: "FES☆TIVE", time: "11:00-11:30" },
@@ -121,7 +127,7 @@
       { id: 19, stage: "Spotify O-EAST", name: "Appare!", time: "19:20-19:55" },
       { id: 20, stage: "Spotify O-EAST", name: "GANG PARADE", time: "19:55-20:30" },
 
-      // Spotify O-WEST
+      // Spotify O-WEST (3/8)
       { id: 21, stage: "Spotify O-WEST", name: "こみっきゅおん！", time: "10:05-10:35" },
       { id: 22, stage: "Spotify O-WEST", name: "#よーよーよー", time: "10:35-11:05" },
       { id: 23, stage: "Spotify O-WEST", name: "テンシメシ໒꒱", time: "11:05-11:35" },
@@ -141,7 +147,7 @@
       { id: 37, stage: "Spotify O-WEST", name: "ハルニシオン", time: "18:55-19:25" },
       { id: 38, stage: "Spotify O-WEST", name: "fav me", time: "19:25-19:55" },
 
-      // duo MUSIC EXCHANGE
+      // duo MUSIC EXCHANGE (3/8)
       { id: 39, stage: "duo MUSIC EXCHANGE", name: "マジカル・パンチライン", time: "10:05-10:40" },
       { id: 40, stage: "duo MUSIC EXCHANGE", name: "アイドルカレッジ", time: "10:40-11:10" },
       { id: 41, stage: "duo MUSIC EXCHANGE", name: "煌めき☆アンフォレント", time: "11:10-11:40" },
@@ -162,7 +168,7 @@
       { id: 56, stage: "duo MUSIC EXCHANGE", name: "fishbowl", time: "19:10-19:40" },
       { id: 57, stage: "duo MUSIC EXCHANGE", name: "タイトル未定", time: "19:40-20:10" },
 
-      // WOMB
+      // WOMB (3/8)
       { id: 58, stage: "WOMB", name: "Maison de Queen", time: "10:05-10:30" },
       { id: 59, stage: "WOMB", name: "zanka", time: "10:30-10:55" },
       { id: 60, stage: "WOMB", name: "HIBANA", time: "10:55-11:20" },
@@ -186,7 +192,7 @@
       { id: 78, stage: "WOMB", name: "ルルネージュ", time: "19:00-19:25" },
       { id: 79, stage: "WOMB", name: "MyDearDarlin'", time: "19:25-19:50" },
 
-      // clubasia
+      // clubasia (3/8)
       { id: 80, stage: "clubasia", name: "Honey Devil", time: "10:10-10:35" },
       { id: 81, stage: "clubasia", name: "虹色の飛行少女", time: "10:35-11:00" },
       { id: 82, stage: "clubasia", name: "KissBee", time: "11:00-11:25" },
@@ -210,7 +216,7 @@
       { id: 100, stage: "clubasia", name: "Peel the Apple", time: "19:05-19:30" },
       { id: 101, stage: "clubasia", name: "可憐なアイボリー", time: "19:30-19:55" },
 
-      // SHIBUYA RING
+      // SHIBUYA RING (3/8)
       { id: 102, stage: "SHIBUYA RING", name: "コングラッチェ！", time: "10:05-10:30" },
       { id: 103, stage: "SHIBUYA RING", name: "ニコルポップ", time: "10:30-10:55" },
       { id: 104, stage: "SHIBUYA RING", name: "ラビットビット", time: "10:55-11:20" },
@@ -234,7 +240,7 @@
       { id: 122, stage: "SHIBUYA RING", name: "ROOKEY✕ROOKEY", time: "19:00-19:25" },
       { id: 123, stage: "SHIBUYA RING", name: "I MY ME MINE", time: "19:25-19:50" },
 
-      // Spotify O-Crest
+      // Spotify O-Crest (3/8)
       { id: 124, stage: "Spotify O-Crest", name: "ParaLuLu", time: "10:10-10:35" },
       { id: 125, stage: "Spotify O-Crest", name: "COLOR OF COLOR", time: "10:35-11:00" },
       { id: 126, stage: "Spotify O-Crest", name: "かすみ草とステラ", time: "11:00-11:25" },
@@ -258,7 +264,7 @@
       { id: 144, stage: "Spotify O-Crest", name: "Lily/ash", time: "19:05-19:30" },
       { id: 145, stage: "Spotify O-Crest", name: "RINCENT♯", time: "19:30-19:55" },
 
-      // Spotify O-nest
+      // Spotify O-nest (3/8)
       { id: 146, stage: "Spotify O-nest", name: "月に足跡を残した少女達は...", time: "10:10-10:35" },
       { id: 147, stage: "Spotify O-nest", name: "ヒロインズ研究生大阪", time: "10:35-11:00" },
       { id: 148, stage: "Spotify O-nest", name: "STAiNY", time: "10:55-11:20" },
@@ -283,21 +289,21 @@
       { id: 167, stage: "Spotify O-nest", name: "LADYBABY", time: "19:25-19:50" }
     ];
 
-    const stageColors = {
+    const stageColorsMap = {
       "Spotify O-EAST": "bg-red-500 text-white", "Spotify O-WEST": "bg-orange-500 text-white",
       "duo MUSIC EXCHANGE": "bg-green-500 text-white", "WOMB": "bg-pink-500 text-white",
       "clubasia": "bg-blue-500 text-white", "SHIBUYA RING": "bg-teal-500 text-white",
       "Spotify O-Crest": "bg-sky-400 text-white", "Spotify O-nest": "bg-purple-500 text-white"
     };
 
-    const stageHexColors = {
+    const stageHexColorsMap = {
       "Spotify O-EAST": "#ef4444", "Spotify O-WEST": "#f97316",
       "duo MUSIC EXCHANGE": "#22c55e", "WOMB": "#ec4899",
       "clubasia": "#3b82f6", "SHIBUYA RING": "#14b8a6",
       "Spotify O-Crest": "#38bdf8", "Spotify O-nest": "#a855f7"
     };
 
-    const stageBorderColors = {
+    const stageBorderColorsMap = {
       "Spotify O-EAST": "border-red-500", "Spotify O-WEST": "border-orange-500",
       "duo MUSIC EXCHANGE": "border-green-500", "WOMB": "border-pink-500",
       "clubasia": "border-blue-500", "SHIBUYA RING": "border-teal-500",
@@ -306,8 +312,8 @@
 
     const TimetableCard = React.memo(({ item, selections, songMemo, onSongChange, onRemove, isGenerating }) => {
       const isRecommended = selections[item.id] === 'recommended';
-      const borderColor = stageBorderColors[item.stage] || 'border-gray-800';
-      const badgeColor = stageColors[item.stage] || 'bg-gray-800 text-white';
+      const borderColor = stageBorderColorsMap[item.stage] || 'border-gray-800';
+      const badgeColor = stageColorsMap[item.stage] || 'bg-gray-800 text-white';
 
       const getDynamicFontSize = (name) => {
           if (!isGenerating) return {};
@@ -394,9 +400,12 @@
 
       return (
         <div className="flex flex-col h-full overflow-hidden">
-          <div className="px-4 py-1 flex-none bg-white/80 backdrop-blur-sm z-20">
+          <div className="px-4 py-1 flex-none bg-white/80 backdrop-blur-sm z-20 border-b border-gray-100">
             <div className="flex items-center justify-between">
-              <p className="text-gray-600 text-[10px] m-0 font-bold tracking-tight">タップで選択 / 通常→おすすめ切替</p>
+              <div className="flex flex-col">
+                <span className="text-rose-600 font-black text-[10px] leading-none mb-0.5">Day2: 3/8(日)</span>
+                <p className="text-gray-500 text-[9px] m-0 font-bold tracking-tight">タップで選択 / 通常→おすすめ切替</p>
+              </div>
               <div className="inline-flex items-center px-2 py-0.5 bg-yellow-100 border border-yellow-200 rounded shrink-0">
                 <Star size={10} className="fill-yellow-500 text-yellow-500 mr-1" /><span className="text-[10px] font-bold text-yellow-800 leading-none">おすすめ {recommendedCount}/5</span>
               </div>
@@ -414,8 +423,8 @@
                 if (stageItems.length === 0) return null;
                 let lastEnd = MIN_TIME;
                 return (
-                  <div key={stage} className="w-[80vw] sm:w-[280px] flex-shrink-0 flex flex-col bg-white/40 rounded-xl shadow-sm border border-gray-100 h-fit min-h-full z-10">
-                    <div className={`px-3 py-1 font-bold flex items-center gap-1.5 sticky top-0 z-30 text-xs rounded-t-xl ${stageColors[stage] || 'bg-gray-800 text-white'}`} style={{ height: `${STICKY_HEADER_HEIGHT}px` }}><MapPin size={14} /><span className="truncate">{stage}</span></div>
+                  <div key={stage} className="w-[80vw] sm:w-[280px] flex-shrink-0 flex flex-col bg-white/40 rounded-xl shadow-sm border border-gray-100 h-fit min-h-full z-10 text-ellipsis">
+                    <div className={`px-3 py-1 font-bold flex items-center gap-1.5 sticky top-0 z-30 text-xs rounded-t-xl ${stageColorsMap[stage] || 'bg-gray-800 text-white'}`} style={{ height: `${STICKY_HEADER_HEIGHT}px` }}><MapPin size={14} /><span className="truncate">{stage}</span></div>
                     <div className="p-1.5 flex-1 relative bg-transparent">
                       {stageItems.map(item => {
                         const gap = item.parsedTime.start - lastEnd; lastEnd = item.parsedTime.end;
@@ -423,7 +432,7 @@
                         return (
                           <React.Fragment key={item.id}>
                             {gap > 0 && <div style={{ height: `${gap * PIXELS_PER_MINUTE}px` }} />}
-                            <button onClick={() => toggleSelection(item.id)} style={{ height: `${(item.parsedTime.end - item.parsedTime.start) * PIXELS_PER_MINUTE}px` }} className={`w-full text-left px-1.5 py-0 rounded-md flex items-center justify-between border overflow-hidden ${isSel ? `${stageColors[stage]} shadow-md border-transparent` : 'bg-white border-gray-200 hover:border-gray-300'}`}>
+                            <button onClick={() => toggleSelection(item.id)} style={{ height: `${(item.parsedTime.end - item.parsedTime.start) * PIXELS_PER_MINUTE}px` }} className={`w-full text-left px-1.5 py-0 rounded-md flex items-center justify-between border overflow-hidden ${isSel ? `${stageColorsMap[stage]} shadow-md border-transparent` : 'bg-white border-gray-200 hover:border-gray-300'}`}>
                               <div className="flex flex-col justify-center h-full w-full pr-1 overflow-hidden whitespace-nowrap text-ellipsis">
                                 <span className={`text-[9px] font-mono whitespace-nowrap leading-none mb-0.5 ${isSel ? 'text-white/80' : 'text-gray-500'}`}>{item.time}</span>
                                 <span className={`font-bold text-[13px] sm:text-[15px] leading-tight text-left truncate ${isSel ? 'text-white' : 'text-gray-900'}`}>{item.name}</span>
@@ -447,6 +456,7 @@
       const [activeTab, setActiveTab] = useState('all');
       const [selections, setSelections] = useState({}); 
       const [songMemos, setSongMemos] = useState({}); 
+      const [gapMemos, setGapMemos] = useState({}); 
       const [userName, setUserName] = useState('');
       const [isGenerating, setIsGenerating] = useState(false);
 
@@ -477,6 +487,8 @@
 
       const onRemove = useCallback((id) => setSelections(prev => { const n = {...prev}; delete n[id]; return n; }), []);
       const onSongChange = useCallback((id, val) => setSongMemos(prev => ({ ...prev, [id]: val })), []);
+      const onGapMemoChange = useCallback((id, val) => setGapMemos(prev => ({ ...prev, [id]: val })), []); 
+      
       const handleTabChange = useCallback((tab) => { setActiveTab(tab); }, []);
 
       const getScheduleWithGaps = useCallback(() => {
@@ -485,7 +497,12 @@
               elements.push({ type: 'card', data: item });
               const next = mySchedule[i+1];
               if (next && (next.parsedTime.start - item.parsedTime.end) >= 15) {
-                  elements.push({ type: 'gap', minutes: (next.parsedTime.start - item.parsedTime.end) });
+                  const minutes = next.parsedTime.start - item.parsedTime.end;
+                  elements.push({ 
+                      type: 'gap', 
+                      id: `gap-${item.id}-${next.id}`, 
+                      minutes: minutes 
+                  });
               }
           });
           return elements;
@@ -526,19 +543,19 @@
           clone.style.height = '100%';
           clone.style.paddingTop = '0px';
 
-          const clonedRecCards = Array.from(clone.querySelectorAll('.item-wrapper'));
+          const clonedAllCards = Array.from(clone.querySelectorAll('.item-wrapper, .gap-wrapper'));
 
           const headerArea = clone.querySelector('.header-content-area');
           if (headerArea) {
             headerArea.style.height = `${headerHeight}px`;
             headerArea.style.minHeight = `${headerHeight}px`;
-            headerArea.style.backgroundColor = 'transparent'; 
-            headerArea.style.border = 'none'; 
+            headerArea.style.backgroundColor = 'transparent';
+            headerArea.style.border = 'none';
             
             headerArea.innerHTML = `
               <div class="w-full flex flex-col items-center justify-center h-full bg-transparent">
                 <div class="flex items-center gap-4 mb-1">
-                  <span class="text-[28px] font-black text-indigo-900 tracking-tighter">IDORISE!! FESTIVAL 2026</span>
+                  <span class="text-[28px] font-black text-rose-900 tracking-tighter">IDORISE!! FESTIVAL 2026</span>
                   <span class="text-rose-600 font-black text-[14px] leading-none">Day2: 3/8(日)</span>
                 </div>
                 <div class="flex items-center gap-1">
@@ -560,7 +577,7 @@
 
             const columnsData = elements.length > 10 ? [elements.slice(0, 10), elements.slice(10)] : [elements];
 
-            columnsData.forEach((colItems) => {
+            columnsData.forEach((colItems, colIdx) => {
                const col = document.createElement('div');
                col.style.flex = '1';
                col.style.display = 'flex';
@@ -568,154 +585,117 @@
                col.style.gap = `${gapBetweenItems}px`; 
                col.style.height = '100%';
 
-               colItems.forEach(el => {
+               colItems.forEach((el, elIdxInCol) => {
                   const elWrapper = document.createElement('div');
                   elWrapper.style.height = `${rowHeight}px`; 
                   elWrapper.style.display = 'flex';
                   elWrapper.style.flexDirection = 'column';
 
-                  if (el.type === 'card') {
-                      const originalIdxInMySchedule = mySchedule.indexOf(el.data);
+                  const globalIdx = (colIdx * 10) + elIdxInCol;
+                  const itemClone = clonedAllCards[globalIdx];
+
+                  if (el.type === 'card' && itemClone) {
                       const isRec = selections[el.data.id] === 'recommended';
-                      const itemClone = clonedRecCards[originalIdxInMySchedule];
-
-                      if (itemClone) {
-                          itemClone.style.height = '100%';
-                          itemClone.style.flex = '1';
-                          
-                          const inner = itemClone.querySelector('.card-inner');
-                          if(inner) {
-                              inner.style.height = '100%';
-                              inner.style.border = '1px solid #e5e7eb';
-                              inner.style.position = 'relative';
-                              
-                              if (isRec) {
-                                inner.style.background = 'linear-gradient(135deg, #fff7ed 0%, #ffffff 100%)';
-                                const recText = document.createElement('div');
-                                recText.textContent = 'おすすめ';
-                                recText.style.position = 'absolute';
-                                recText.style.right = '4px';
-                                recText.style.top = '0';
-                                recText.style.bottom = '0';
-                                recText.style.display = 'flex';
-                                recText.style.alignItems = 'center';
-                                recText.style.writingMode = 'vertical-rl';
-                                recText.style.fontSize = '8px';
-                                recText.style.fontWeight = '900';
-                                recText.style.color = '#f97316';
-                                recText.style.letterSpacing = '1px';
-                                recText.style.transform = 'translateY(6px)';
-                                inner.appendChild(recText);
-                              } else {
-                                inner.style.background = '#ffffff';
-                              }
-                          }
-
-                          const body = itemClone.querySelector('.image-card-body');
-                          if(body) {
-                            body.style.padding = '2px 6px';
-                            body.style.height = '100%';
-                            body.style.borderLeft = `4px solid ${stageHexColors[el.data.stage] || '#000'}`;
-                            body.style.display = 'flex';
-                            body.style.alignItems = 'center';
-                          }
-                          
-                          const leftCol = body?.querySelector('.left-col-meta');
-                          if(leftCol) {
-                              leftCol.style.width = '60px';
-                              leftCol.style.marginRight = '4px';
-                              leftCol.style.transform = 'translateY(-8px)';
-                              
-                              const timeDiv = leftCol.querySelector('.time-container');
-                              if(timeDiv) {
-                                  timeDiv.style.backgroundColor = 'transparent';
-                                  timeDiv.style.padding = '0';
-                                  timeDiv.style.marginBottom = '0';
-                              }
-
-                              const stBadge = leftCol.querySelector('.stage-badge');
-                              if(stBadge) {
-                                  stBadge.style.backgroundColor = 'transparent';
-                                  stBadge.style.borderRadius = '0';
-                                  stBadge.style.padding = '0';
-                                  stBadge.style.textAlign = 'center';
-                                  const stage = el.data.stage;
-                                  stBadge.style.color = stageHexColors[stage] || '#000000';
-                                  const span = stBadge.querySelector('span');
-                                  if(span) {
-                                      span.textContent = el.data.stage.replace('Spotify O-', '').replace('Spotify ', '');
-                                      span.style.fontWeight = '900'; 
-                                      span.style.fontSize = '11.5px';
-                                      span.style.lineHeight = '1.5';
-                                      span.style.display = 'block';
-                                      span.style.paddingBottom = '2px';
-                                      span.style.overflow = 'visible'; 
-                                  }
-                              }
-                          }
-
-                          const centerCol = body?.querySelector('.center-col-name');
-                          if(centerCol) {
-                              centerCol.style.alignItems = 'center';
-                              centerCol.style.justifyContent = 'center';
-                              centerCol.style.textAlign = 'center';
-                              centerCol.style.flex = '1';
-                              centerCol.style.overflow = 'visible';
-                              centerCol.style.transform = isRec ? 'translateY(2px)' : 'translateY(-2px)';
-                              
-                              const nameTxt = centerCol.querySelector('.two-col-group-name');
-                              if(nameTxt) {
-                                  const len = el.data.name.length;
-                                  nameTxt.style.fontSize = len > 15 ? '13px' : len > 10 ? '15px' : '18px';
-                                  nameTxt.style.fontWeight = '900';
-                                  nameTxt.style.lineHeight = '1.2';
-                                  nameTxt.style.textAlign = 'center';
-                                  nameTxt.style.whiteSpace = 'normal';
-                              }
-                              const songCont = centerCol.querySelector('.song-info-container');
-                              if(songCont) {
-                                songCont.style.marginTop = '4px';
-                                songCont.style.justifyContent = 'center';
-                                songCont.style.alignItems = 'center'; 
-                                songCont.style.overflow = 'visible';
-                                songCont.style.display = 'flex';
-                                
-                                const icon = songCont.querySelector('.song-decoration-icon');
-                                if(icon) icon.style.transform = 'translateY(2px)';
-
-                                const memoSpan = songCont.querySelector('.song-memo-text-node');
-                                if (memoSpan) {
-                                    memoSpan.style.fontSize = '10px'; 
-                                    memoSpan.style.lineHeight = '1.5'; 
-                                    memoSpan.style.display = 'inline-block';
-                                    memoSpan.style.paddingBottom = '4px'; 
-                                    memoSpan.textContent = songMemos[el.data.id] || "";
-                                }
-                              }
-                          }
-                          
-                          itemClone.querySelector('button[aria-label="削除"]')?.remove();
-                          itemClone.querySelector('.absolute.top-1.right-1')?.remove();
-                          itemClone.querySelector('.rec-sidebar')?.remove();
-
-                          elWrapper.appendChild(itemClone);
+                      itemClone.style.height = '100%';
+                      itemClone.style.flex = '1';
+                      const inner = itemClone.querySelector('.card-inner');
+                      if(inner) {
+                          inner.style.height = '100%';
+                          inner.style.border = '1px solid #e5e7eb';
+                          inner.style.position = 'relative';
+                          if (isRec) {
+                            inner.style.background = 'linear-gradient(135deg, #fff7ed 0%, #ffffff 100%)';
+                            const recText = document.createElement('div');
+                            recText.textContent = 'おすすめ';
+                            recText.style.position = 'absolute';
+                            recText.style.right = '4px'; recText.style.top = '0'; recText.style.bottom = '0';
+                            recText.style.display = 'flex'; recText.style.alignItems = 'center';
+                            recText.style.writingMode = 'vertical-rl';
+                            recText.style.fontSize = '8px'; recText.style.fontWeight = '900';
+                            recText.style.color = '#f97316'; recText.style.letterSpacing = '1px';
+                            recText.style.transform = 'translateY(6px)';
+                            inner.appendChild(recText);
+                          } else { inner.style.background = '#ffffff'; }
                       }
-                  } else {
-                      const gapDiv = document.createElement('div');
-                      gapDiv.style.height = '30%'; 
-                      gapDiv.style.marginTop = 'auto';
-                      gapDiv.style.marginBottom = 'auto';
-                      gapDiv.style.backgroundColor = '#f3f4f6';
-                      gapDiv.style.borderRadius = '8px';
-                      gapDiv.style.display = 'flex';
-                      gapDiv.style.alignItems = 'center';
-                      gapDiv.style.justifyContent = 'center';
-                      gapDiv.style.fontSize = '10px';
-                      gapDiv.style.fontWeight = 'bold';
-                      gapDiv.style.color = '#9ca3af';
-                      gapDiv.textContent = `☕️ ${el.minutes}分 空き`;
-                      gapDiv.style.paddingBottom = '6px';
-                      elWrapper.appendChild(gapDiv);
+                      const body = itemClone.querySelector('.image-card-body');
+                      if(body) {
+                        body.style.padding = '2px 6px'; body.style.height = '100%';
+                        body.style.borderLeft = `4px solid ${stageHexColorsMap[el.data.stage] || '#000'}`;
+                        body.style.display = 'flex'; body.style.alignItems = 'center';
+                      }
+                      const leftCol = body?.querySelector('.left-col-meta');
+                      if(leftCol) {
+                          leftCol.style.width = '60px'; leftCol.style.marginRight = '4px';
+                          leftCol.style.transform = 'translateY(-8px)';
+                          const timeDiv = leftCol.querySelector('.time-container');
+                          if(timeDiv) { timeDiv.style.backgroundColor = 'transparent'; timeDiv.style.padding = '0'; timeDiv.style.marginBottom = '0'; }
+                          const stBadge = leftCol.querySelector('.stage-badge');
+                          if(stBadge) {
+                              stBadge.style.backgroundColor = 'transparent'; stBadge.style.borderRadius = '0';
+                              stBadge.style.padding = '0'; stBadge.style.textAlign = 'center';
+                              stBadge.style.color = stageHexColorsMap[el.data.stage] || '#000000';
+                              const span = stBadge.querySelector('span');
+                              if(span) {
+                                  span.textContent = el.data.stage.replace('Spotify O-', '').replace('Spotify ', '');
+                                  span.style.fontWeight = '900'; span.style.fontSize = '11.5px';
+                                  span.style.lineHeight = '1.5'; span.style.display = 'block';
+                                  span.style.paddingBottom = '2px'; span.style.overflow = 'visible'; 
+                              }
+                          }
+                      }
+                      const centerCol = body?.querySelector('.center-col-name');
+                      if(centerCol) {
+                          centerCol.style.alignItems = 'center'; centerCol.style.justifyContent = 'center';
+                          centerCol.style.textAlign = 'center'; centerCol.style.flex = '1';
+                          centerCol.style.overflow = 'visible'; 
+                          centerCol.style.transform = isRec ? 'translateY(2px)' : 'translateY(-2px)';
+                          const nameTxt = centerCol.querySelector('.two-col-group-name');
+                          if(nameTxt) {
+                              const len = el.data.name.length;
+                              nameTxt.style.fontSize = len > 15 ? '13px' : len > 10 ? '15px' : '18px';
+                              nameTxt.style.fontWeight = '900'; nameTxt.style.lineHeight = '1.2';
+                              nameTxt.style.textAlign = 'center'; nameTxt.style.whiteSpace = 'normal';
+                          }
+                          const songCont = centerCol.querySelector('.song-info-container');
+                          if(songCont) {
+                            songCont.style.marginTop = '4px'; songCont.style.justifyContent = 'center';
+                            songCont.style.alignItems = 'center'; songCont.style.display = 'flex';
+                            const icon = songCont.querySelector('.song-decoration-icon');
+                            if(icon) icon.style.transform = 'translateY(2px)';
+                            const memoSpan = songCont.querySelector('.song-memo-text-node');
+                            if (memoSpan) {
+                                memoSpan.style.fontSize = '10px'; memoSpan.style.lineHeight = '1.5'; 
+                                memoSpan.style.display = 'inline-block'; memoSpan.style.paddingBottom = '4px'; 
+                                memoSpan.textContent = songMemos[el.data.id] || "";
+                            }
+                          }
+                      }
+                      itemClone.querySelector('button[aria-label="削除"]')?.remove();
+                      itemClone.querySelector('.absolute.top-1.right-1')?.remove();
+                      itemClone.querySelector('.rec-sidebar')?.remove();
+                      elWrapper.appendChild(itemClone);
+                  } else if (el.type === 'gap' && itemClone) {
+                      itemClone.style.height = '100%';
+                      itemClone.style.flex = '1';
+                      const inner = itemClone.querySelector('.card-inner-gap');
+                      if (inner) {
+                          inner.style.height = '100%';
+                          inner.style.display = 'flex';
+                          inner.style.flexDirection = 'column';
+                          inner.style.alignItems = 'center';
+                          inner.style.justifyContent = 'center';
+                          inner.style.backgroundColor = '#f3f4f6';
+                          inner.style.borderRadius = '8px';
+                          const memoArea = inner.querySelector('.gap-memo-display');
+                          if(memoArea) {
+                              memoArea.style.fontSize = '11px';
+                              memoArea.style.fontWeight = '900';
+                              memoArea.style.color = '#4b5563';
+                              memoArea.textContent = gapMemos[el.id] || "";
+                          }
+                          inner.querySelector('input')?.remove();
+                      }
+                      elWrapper.appendChild(itemClone);
                   }
                   col.appendChild(elWrapper);
                });
@@ -748,7 +728,7 @@
           const url = canvas.toDataURL('image/png');
           const a = document.createElement('a'); 
           a.href = url; 
-          a.download = `idorise_2026_timetable_0308.png`; 
+          a.download = `idorise_2026_0308_mytable_v1_0.png`; 
           a.click();
         } catch (error) { console.error('画像生成エラー:', error); } finally { setIsGenerating(false); }
       };
@@ -756,40 +736,64 @@
       return (
         <div className="h-screen flex flex-col overflow-hidden text-gray-900 font-sans">
           <header className="bg-white px-4 py-2 shadow-sm z-50 flex-none border-b border-gray-100">
-            <h1 className="flex flex-row items-center justify-center gap-2 text-indigo-900">
+            <h1 className="flex flex-row items-center justify-center gap-2 text-rose-900 h-10">
               <span className="text-sm sm:text-base font-black tracking-tight whitespace-nowrap">IDORISE!! FESTIVAL 2026</span>
-              <div className="flex flex-row items-center gap-1.5 h-5">
-                <div className="px-1.5 py-0 text-[9px] font-bold text-rose-600 bg-rose-50 rounded border border-rose-100 whitespace-nowrap flex items-center justify-center h-full"><span className="export-text-lift">Day2: 3/8(日)</span></div>
-                <span className="text-[9px] font-normal text-gray-500 whitespace-nowrap leading-none pt-0.5 flex items-center h-full"><span className="export-text-lift"> by ドルオタボックス</span></span>
-              </div>
+              <div className="px-1.5 py-0.5 text-[10px] font-bold text-rose-600 bg-rose-50 rounded border border-rose-100 whitespace-nowrap">Day2: 3/8(日)</div>
             </h1>
           </header>
+
           <main className="flex-1 overflow-hidden pb-16">
             {activeTab === 'all' ? (
               <AllStageTimetable processedSchedule={processedSchedule} selections={selections} toggleSelection={toggleSelection} recommendedCount={recommendedCount} busyRanges={busyRanges} MIN_TIME = {MIN_TIME} />
             ) : (
               <div className={`mx-auto pb-24 h-full overflow-y-auto w-full scrollbar-visible`}>
                 <div className="flex flex-col sm:flex-row items-center justify-center p-2 mb-2 mt-2 mx-auto max-w-xl">
-                  <button onClick={handleDownload} disabled={isGenerating} className="flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 disabled:bg-indigo-300 transition-colors shadow-lg w-full sm:w-auto active:scale-95">
+                  <button onClick={handleDownload} disabled={isGenerating} className="flex items-center justify-center gap-2 px-6 py-3 bg-rose-600 text-white text-sm font-bold rounded-xl hover:bg-rose-700 disabled:bg-rose-300 transition-colors shadow-lg w-full sm:w-auto active:scale-95">
                     {isGenerating ? <Loader2 size={18} className="animate-spin" /> : <Download size={18} />}{isGenerating ? '生成中...' : '画像を保存'}
                   </button>
                 </div>
-                <div id="my-schedule-content" className="bg-gray-50 flex flex-col w-full h-full relative pt-4 sm:pt-8">
+                <div id="my-schedule-content" className="bg-gray-50 flex flex-col w-full h-fit relative">
                   <div className="bg-white border-b border-gray-200 shrink-0 header-content-area overflow-hidden py-4 text-center">
                     <div className="flex flex-col items-center justify-center gap-2 w-full px-1">
-                       <div className="flex items-center gap-1.5 shrink-0 h-6"><h2 className="text-[14px] sm:text-[16px] font-black text-indigo-900 tracking-tight m-0 whitespace-nowrap export-text-lift">IDORISE!! FESTIVAL 2026</h2><div className="px-1.5 py-0 bg-rose-500 rounded-sm flex items-center justify-center h-4.5 translate-y-[1px]"><span className="export-text-lift text-[9px] sm:text-[10px] font-bold text-white leading-none">Day2: 3/8(日)</span></div></div>
-                       <div className="name-input-container border-b-2 border-indigo-300 px-1 flex items-center h-7 min-w-[120px] justify-center font-sans font-bold"><input type="text" placeholder="名前を入力" value={userName} onChange={(e) => setUserName(e.target.value)} className="name-input-field text-[14px] font-bold text-center pr-0.5 text-gray-800 bg-transparent w-[80px] focus:outline-none placeholder-gray-300" maxLength="15" /><span className="text-[12px] font-bold text-gray-600 whitespace-nowrap flex items-center h-full"><span className="export-text-lift"> のタイテ</span></span></div>
+                       <div className="flex items-center gap-1.5 shrink-0 h-6"><h2 className="text-[14px] sm:text-[16px] font-black text-rose-900 tracking-tight m-0 whitespace-nowrap export-text-lift">IDORISE!! FESTIVAL 2026</h2><div className="px-1.5 py-0 bg-rose-500 rounded-sm flex items-center justify-center h-4.5 translate-y-[1px] text-[9px] sm:text-[10px] font-bold text-white">Day2: 3/8(日)</div></div>
+                       <div className="name-input-container border-b-2 border-rose-300 px-1 flex items-center h-7 min-w-[120px] justify-center font-sans font-bold"><input type="text" placeholder="名前を入力" value={userName} onChange={(e) => setUserName(e.target.value)} className="name-input-field text-[14px] font-bold text-center pr-0.5 text-gray-800 bg-transparent w-[80px] focus:outline-none placeholder-gray-300" maxLength="15" /><span className="text-[12px] font-bold text-gray-600 whitespace-nowrap flex items-center h-full"> のタイテ</span></div>
                     </div>
                   </div>
                   <div className="flex flex-col items-center py-4 px-2 timeline-outer-container">
                     <div className="flex flex-col gap-2 w-full max-w-xl mx-auto">
-                      {mySchedule.map((item) => (
-                        <TimetableCard 
-                          key={item.id} item={item} selections={selections}
-                          songMemo={songMemos[item.id] || ''}
-                          onSongChange={onSongChange} onRemove={onRemove} isGenerating={isGenerating}
-                        />
-                      ))}
+                      {getScheduleWithGaps().map((el) => {
+                        if (el.type === 'card') {
+                          return (
+                            <TimetableCard 
+                              key={el.data.id} item={el.data} selections={selections}
+                              songMemo={songMemos[el.data.id] || ''}
+                              onSongChange={onSongChange} onRemove={onRemove} isGenerating={isGenerating}
+                            />
+                          );
+                        } else {
+                          return (
+                            <div key={el.id} className="gap-wrapper w-full h-full">
+                                <div className="card-inner-gap bg-gray-100/80 border border-gray-200 rounded-xl p-2 flex flex-col items-center justify-center min-h-[50px]">
+                                    <div className="flex items-center gap-1.5 gap-label mb-1">
+                                        <Coffee size={14} className="text-gray-400" />
+                                        <span className="text-[11px] font-bold text-gray-500">{el.minutes}分 空き</span>
+                                    </div>
+                                    {!isGenerating ? (
+                                        <input 
+                                            type="text" 
+                                            placeholder="過ごし方を記入" 
+                                            value={gapMemos[el.id] || ''}
+                                            onChange={(e) => onGapMemoChange(el.id, e.target.value)}
+                                            className="w-full bg-white/50 border border-gray-200 rounded px-2 py-1 text-[11px] font-bold text-center focus:outline-none focus:border-rose-300 placeholder-gray-300"
+                                        />
+                                    ) : (
+                                        <span className="text-[11px] font-black text-gray-600 gap-memo-display">{gapMemos[el.id] || ''}</span>
+                                    )}
+                                </div>
+                            </div>
+                          );
+                        }
+                      })}
                     </div>
                   </div>
                 </div>
@@ -797,9 +801,9 @@
             )}
           </main>
           <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe z-50">
-            <div className="max-w-lg mx-auto flex">
-              <button onClick={() => handleTabChange('all')} className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors ${activeTab === 'all' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}><ListTodo size={18} /><span className="text-[10px] font-bold">全ステージ一覧</span></button>
-              <button onClick={() => handleTabChange('mine')} className={`flex-1 py-3 flex flex-col items-center gap-0.5 transition-colors relative ${activeTab === 'mine' ? 'text-indigo-600' : 'text-gray-400 hover:text-gray-600'}`}><div className="relative"><CalendarRange size={18} />{Object.keys(selections).length > 0 && <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">{Object.keys(selections).length}</span>}</div><span className="text-[10px] font-bold">マイスケジュール</span></button>
+            <div className="max-w-lg mx-auto flex h-16">
+              <button onClick={() => handleTabChange('all')} className={`flex-1 py-3 flex flex-col items-center justify-center gap-0.5 transition-colors ${activeTab === 'all' ? 'text-rose-600' : 'text-gray-400 hover:text-gray-600'}`}><ListTodo size={18} /><span className="text-[10px] font-bold">全ステージ一覧</span></button>
+              <button onClick={() => handleTabChange('mine')} className={`flex-1 py-3 flex flex-col items-center justify-center gap-0.5 transition-colors relative ${activeTab === 'mine' ? 'text-rose-600' : 'text-gray-400 hover:text-gray-600'}`}><div className="relative"><CalendarRange size={18} />{Object.keys(selections).length > 0 && <span className="absolute -top-1 -right-2 bg-red-500 text-white text-[9px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">{Object.keys(selections).length}</span>}</div><span className="text-[10px] font-bold">マイスケジュール</span></button>
             </div>
           </div>
         </div>
